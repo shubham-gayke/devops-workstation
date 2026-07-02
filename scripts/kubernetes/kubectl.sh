@@ -31,3 +31,33 @@ install_kubectl() {
     log_success "kubectl installed successfully."
 
 }
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"/../.. && pwd)"
+
+source "$ROOT_DIR/scripts/common/bootstrap.sh"
+
+install_kubectl() {
+
+    if command -v kubectl >/dev/null 2>&1; then
+        log_warning "kubectl already installed."
+        kubectl version --client
+        return
+    fi
+
+    log_info "Installing kubectl..."
+
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+    chmod +x kubectl
+
+    sudo mv kubectl /usr/local/bin/
+
+    log_success "kubectl installed."
+
+    kubectl version --client
+}
+
+install_kubectl
