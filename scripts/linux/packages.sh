@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"/../.. && pwd)"
 
-source "$ROOT_DIR/scripts/common/core/colors.sh"
-source "$ROOT_DIR/scripts/common/core/logging.sh"
-source "$ROOT_DIR/scripts/common/system/system.sh"
+source "$ROOT_DIR/scripts/common/bootstrap.sh"
 
 update_packages() {
     log_info "Updating package lists..."
@@ -17,7 +15,6 @@ update_packages() {
 }
 
 install_base_packages() {
-
     log_info "Installing base packages..."
 
     sudo apt-get install -y \
@@ -58,3 +55,6 @@ install_base_packages() {
 
     log_success "Base packages installed."
 }
+
+update_packages
+install_base_packages
