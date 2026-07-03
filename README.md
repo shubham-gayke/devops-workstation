@@ -26,41 +26,65 @@ Instead of one giant script that installs everything and breaks the moment one t
 
 The framework follows a **layered, plugin-style architecture**: a thin orchestration layer at the top, a shared core engine in the middle, and independent domain modules at the bottom — all of them consuming the same logging, validation, and package-handling primitives instead of reimplementing them.
 
-```mermaid
-flowchart TD
-    A["👤 User runs<br/>install.sh"]
-    A --> B["🚀 bootstrap.sh<br/>prepares the environment"]
-    B --> C["🔍 loader.sh<br/>discovers & loads available modules"]
-    C --> D["⚙️ engine.sh<br/>central execution engine"]
-    D --> E["🎨 Core Layer initialized<br/>banner.sh · colors.sh · logging.sh"]
-    E --> F["🧩 System Layer initialized<br/>package.sh · system.sh · validator.sh"]
-    F --> G["🛠️ utils.sh loaded<br/>shared helper functions"]
-    G --> H["📦 Engine begins domain execution loop"]
-    H --> I["🐧 linux<br/>base OS, packages, hardening"]
-    I --> J["🐳 docker  ☸️ kubernetes<br/>container platform tooling"]
-    J --> K["☁️ cloud  🏗️ iac<br/>cloud CLIs & infrastructure as code"]
-    K --> L["🗄️ databases  📊 monitoring  🔒 security"]
-    L --> M["💻 languages  🌐 webserver  📨 message-queue"]
-    M --> N["🔧 git  🔁 ci-cd  📋 ansible  🖥️ virtualization  🧰 utilities"]
-    N --> O["✅ verify/<br/>post-install validation per domain"]
-    O --> P["🎉 Fully configured<br/>DevOps workstation"]
+```mermaidflowchart TD
+    Start(["👤 User runs<br/>install.sh"]):::entry
+    Start --> Bootstrap
 
-    style A fill:#4EAA25,color:#fff
-    style B fill:#2b6cb0,color:#fff
-    style C fill:#2b6cb0,color:#fff
-    style D fill:#2b6cb0,color:#fff
-    style E fill:#805ad5,color:#fff
-    style F fill:#805ad5,color:#fff
-    style G fill:#805ad5,color:#fff
-    style H fill:#dd6b20,color:#fff
-    style I fill:#dd6b20,color:#fff
-    style J fill:#dd6b20,color:#fff
-    style K fill:#dd6b20,color:#fff
-    style L fill:#dd6b20,color:#fff
-    style M fill:#dd6b20,color:#fff
-    style N fill:#dd6b20,color:#fff
-    style O fill:#38a169,color:#fff
-    style P fill:#38a169,color:#fff
+    subgraph BOOT["🚀 BOOTSTRAP PHASE"]
+        direction LR
+        Bootstrap["bootstrap.sh<br/>prepares environment"]:::bootstrap
+        Loader["loader.sh<br/>discovers modules"]:::bootstrap
+        Engine["engine.sh<br/>execution engine"]:::bootstrap
+        Bootstrap --> Loader --> Engine
+    end
+
+    BOOT --> CORE
+
+    subgraph CORE["🎨 CORE LAYER"]
+        direction LR
+        Banner["banner.sh"]:::core
+        Colors["colors.sh"]:::core
+        Logging["logging.sh"]:::core
+    end
+
+    CORE --> SYS
+
+    subgraph SYS["🧩 SYSTEM LAYER"]
+        direction LR
+        Package["package.sh"]:::sys
+        System["system.sh"]:::sys
+        Validator["validator.sh"]:::sys
+    end
+
+    SYS --> Utils["🛠️ utils.sh<br/>shared helper functions"]:::utils
+    Utils --> DOMAIN
+
+    subgraph DOMAIN["📦 DOMAIN MODULES · parallel execution"]
+        direction LR
+        Linux["🐧 linux"]:::domain
+        Containers["🐳 docker · ☸️ kubernetes"]:::domain
+        CloudIac["☁️ cloud · 🏗️ iac"]:::domain
+        Data["🗄️ databases · 📊 monitoring · 🔒 security"]:::domain
+        Lang["💻 languages · 🌐 webserver · 📨 message-queue"]:::domain
+        Tools["🔧 git · 🔁 ci-cd · 📋 ansible · 🖥️ virtualization · 🧰 utilities"]:::domain
+    end
+
+    DOMAIN --> Verify["✅ verify/<br/>post-install validation"]:::verify
+    Verify --> Done(["🎉 Fully configured<br/>DevOps workstation"]):::done
+
+    classDef entry fill:#22c55e,stroke:#15803d,stroke-width:2px,color:#ffffff,font-weight:bold
+    classDef bootstrap fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#ffffff
+    classDef core fill:#a855f7,stroke:#7e22ce,stroke-width:2px,color:#ffffff
+    classDef sys fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#ffffff
+    classDef utils fill:#ec4899,stroke:#be185d,stroke-width:2px,color:#ffffff
+    classDef domain fill:#f97316,stroke:#c2410c,stroke-width:2px,color:#ffffff
+    classDef verify fill:#14b8a6,stroke:#0f766e,stroke-width:2px,color:#ffffff
+    classDef done fill:#22c55e,stroke:#15803d,stroke-width:3px,color:#ffffff,font-weight:bold
+
+    style BOOT fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#ffffff
+    style CORE fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#ffffff
+    style SYS fill:#0f172a,stroke:#8b5cf6,stroke-width:2px,color:#ffffff
+    style DOMAIN fill:#0f172a,stroke:#f97316,stroke-width:2px,color:#ffffff
 ```
 
 **How it flows, step by step:**
