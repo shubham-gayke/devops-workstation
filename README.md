@@ -26,7 +26,8 @@ Instead of one giant script that installs everything and breaks the moment one t
 
 The framework follows a **layered, plugin-style architecture**: a thin orchestration layer at the top, a shared core engine in the middle, and independent domain modules at the bottom — all of them consuming the same logging, validation, and package-handling primitives instead of reimplementing them.
 
-```mermaidflowchart TD
+```mermaid
+flowchart TD
     Start(["👤 User runs<br/>install.sh"]):::entry
     Start --> Bootstrap
 
@@ -38,28 +39,30 @@ The framework follows a **layered, plugin-style architecture**: a thin orchestra
         Bootstrap --> Loader --> Engine
     end
 
-    BOOT --> CORE
+    Engine --> Banner
 
     subgraph CORE["🎨 CORE LAYER"]
         direction LR
         Banner["banner.sh"]:::core
         Colors["colors.sh"]:::core
         Logging["logging.sh"]:::core
+        Banner --> Colors --> Logging
     end
 
-    CORE --> SYS
+    Logging --> Package
 
     subgraph SYS["🧩 SYSTEM LAYER"]
         direction LR
         Package["package.sh"]:::sys
         System["system.sh"]:::sys
         Validator["validator.sh"]:::sys
+        Package --> System --> Validator
     end
 
-    SYS --> Utils["🛠️ utils.sh<br/>shared helper functions"]:::utils
-    Utils --> DOMAIN
+    Validator --> Utils["🛠️ utils.sh<br/>shared helper functions"]:::utils
+    Utils --> Linux
 
-    subgraph DOMAIN["📦 DOMAIN MODULES · parallel execution"]
+    subgraph DOMAIN["📦 DOMAIN MODULES · sequential execution loop"]
         direction LR
         Linux["🐧 linux"]:::domain
         Containers["🐳 docker · ☸️ kubernetes"]:::domain
@@ -67,9 +70,10 @@ The framework follows a **layered, plugin-style architecture**: a thin orchestra
         Data["🗄️ databases · 📊 monitoring · 🔒 security"]:::domain
         Lang["💻 languages · 🌐 webserver · 📨 message-queue"]:::domain
         Tools["🔧 git · 🔁 ci-cd · 📋 ansible · 🖥️ virtualization · 🧰 utilities"]:::domain
+        Linux --> Containers --> CloudIac --> Data --> Lang --> Tools
     end
 
-    DOMAIN --> Verify["✅ verify/<br/>post-install validation"]:::verify
+    Tools --> Verify["✅ verify/<br/>post-install validation"]:::verify
     Verify --> Done(["🎉 Fully configured<br/>DevOps workstation"]):::done
 
     classDef entry fill:#22c55e,stroke:#15803d,stroke-width:2px,color:#ffffff,font-weight:bold
