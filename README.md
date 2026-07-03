@@ -6,20 +6,25 @@
 
 **56 directories · 104 files · 100% Shell · 16 tool domains, one framework**
 
-[Overview](#-overview) • [Architecture](#-architecture) • [Features](#-whats-inside) • [Getting Started](#-getting-started) • [Usage](#-usage) • [Roadmap](#-roadmap)
-
 </div>
 
 ---
 
 ## 📖 Overview
 
-**DevOps Workstation** is not a pile of install scripts — it's a **modular bootstrap framework** for standing up a fully-equipped DevOps engineering machine (built and tested on Ubuntu / WSL) in a repeatable, predictable way.
+**DevOps Workstation** is a Bash-based automation framework that helps you set up a complete DevOps development environment on **Ubuntu** or **WSL** with a single command.
 
-Instead of one giant script that installs everything and breaks the moment one tool fails, this project is architected around a **shared core engine** that every domain module (Docker, Kubernetes, Cloud CLIs, IaC, Databases, Monitoring, Security, Languages, and more) plugs into. Each module is independently runnable, independently testable, and independently maintainable — while sharing the same logging, package management, and validation logic underneath.
+Instead of manually installing and configuring dozens of tools one by one, this project automates the entire setup process. It installs popular DevOps tools such as **Docker, Kubernetes, Terraform, Cloud CLIs, Databases, Monitoring tools, Security scanners, Programming Languages, Git utilities**, and many more.
 
-**Why it exists:** setting up a new dev machine (or a new team member's machine, or a throwaway cloud VM) usually means an afternoon lost to `apt install`, broken PPAs, and forgotten config tweaks. This project turns that afternoon into a single command.
+The project is organized into **independent modules**, where each module is responsible for installing and managing a specific technology or toolset. This modular design makes it easy to install only what you need, extend the framework with new tools, and maintain each component separately.
 
+All modules share a common framework for:
+- Package management
+- Logging
+- Validation
+- Common utility functions
+
+Whether you're setting up a **new development machine**, preparing a **cloud VM**, or onboarding a **new team member**, DevOps Workstation provides a fast, consistent, and repeatable way to build a production-ready DevOps environment.
 ---
 
 ## 🏗️ Architecture
